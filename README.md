@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/80p97pr8iq705j16?svg=true)](https://ci.appveyor.com/project/LiquidAssContainer/ajs-arraybuffer)
