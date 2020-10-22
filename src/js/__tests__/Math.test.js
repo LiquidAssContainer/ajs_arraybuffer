@@ -1,4 +1,4 @@
-import { Character, Magician, Daemon, Peasant } from '../Math';
+import { ShootingCharacter, MagicianCharacter, Magician, Daemon, Bowman } from '../Math';
 
 test('Demon attacks', () => {
 	const daemon = new Daemon();
@@ -6,6 +6,7 @@ test('Demon attacks', () => {
 	expect(daemon.attack(1)).toBe(100);
 	expect(daemon.attack(2)).toBe(90);
 	expect(daemon.attack(4)).toBe(70);
+	expect(daemon.attack(666)).toBe(0);
 });
 
 test('Magician attacks', () => {
@@ -14,11 +15,12 @@ test('Magician attacks', () => {
 	expect(magician.attack(1)).toBe(40);
 	expect(magician.attack(2)).toBe(36);
 	expect(magician.attack(4)).toBe(28);
+	expect(magician.attack(14)).toBe(0);
 });
 
 test('Demon attacks when stoned', () => {
 	const daemon = new Daemon();
-	daemon.setStoned();
+	daemon.stoned = true;
 
 	expect(daemon.attack(2)).toBe(85);
 });
@@ -29,9 +31,17 @@ test('Attack without distance', () => {
 	expect(() => daemon.attack()).toThrow(Error('Не указана дистация до цели'));
 });
 
-test('Other class', () => {
-	const peasant = new Peasant();
+test('Bowman', () => {
+	const bowman = new Bowman();
 
-	expect(peasant.attack()).toBe(1);
-	expect(() => peasant.setStoned()).toThrow(Error('Данный класс не может быть одурманен'));
+	expect(bowman.attack(8)).toBe(10);
+	expect(bowman.attack(9)).toBe(0);
+});
+
+test('Wrong stoned parameter', () => {
+	const daemon = new Daemon();
+
+	expect(() => {
+		daemon.stoned = 'стоунд';
+	}).toThrow(Error('Аргумент должен быть булевым значением'));
 });

@@ -1,53 +1,65 @@
-export class Character {
+export class ShootingCharacter {
 	constructor(name, type) {
 		this.name = name;
 		this.type = type;
 	}
 
-	attack(distance) {
+	attack(distance) { // сделал так, потому что передавать дистанцию аргументом кажется логичным
+		if (!distance) {
+			throw new Error('Не указана дистация до цели');
+		}
+
 		if (this.hasMagic) {
-			if (!distance) {
-				throw new Error('Не указана дистация до цели');
+			let damage = (this.attackDamage * (11 - distance)) / 10; // может, не самая понятная формула
+			if (this.stoned) {
+				damage -= Math.log2(distance) * 5; // без округлений возможных дробных значений
 			}
-
-			let attack = (this._attack * (11 - distance)) / 10;
-			return (this.isStoned) ? (attack - Math.log2(distance) * 5) : attack; // без округлений возможных дробных значений
+			return (damage > 0) ? damage : 0;
 		}
 
-		return this._attack;
-	}
-
-	setStoned() {
-		if (this.hasMagic) {
-			this.isStoned = true;
-		} else {
-			throw new Error('Данный класс не может быть одурманен');
-		}
+		return (this.attackRange >= distance) ? this.attackDamage : 0; // ну это уже отсебятина с Bowman
 	}
 }
 
-export class Magician extends Character {
+export class MagicianCharacter extends ShootingCharacter {
+	constructor(name, type) {
+		super(name, type);
+		this.hasMagic = true;
+	}
+
+	get stoned() {
+		return this._stoned;
+	}
+
+	set stoned(bool) {
+		if (typeof bool !== 'boolean') {
+			throw new Error('Аргумент должен быть булевым значением');
+		}
+		this._stoned = bool;
+	}
+}
+
+export class Magician extends MagicianCharacter {
 	constructor(name, type) {
 		super(name, 'Magician');
-		this._attack = 40;
+		this.attackDamage = 40;
 		this.health = 10;
-		this.hasMagic = true;
 	}
 }
 
-export class Daemon extends Character {
+export class Daemon extends MagicianCharacter {
 	constructor(name, type) {
 		super(name, 'Daemon');
-		this._attack = 100;
+		this.attackDamage = 100;
 		this.health = 10;
-		this.hasMagic = true;
 	}
 }
 
-export class Peasant extends Character {
+export class Bowman extends ShootingCharacter {
 	constructor(name, type) {
-		super(name, 'Peasant');
-		this._attack = 1;
-		this.health = 1;
+		super(name, 'Bowman');
+		this.attackDamage = 10;
+		this.health = 20;
+		this.attackRange = 8;
 	}
 }
