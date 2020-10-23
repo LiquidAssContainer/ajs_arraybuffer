@@ -12,9 +12,9 @@ export class ShootingCharacter {
 		if (this.hasMagic) {
 			let damage = (this.attackDamage * (11 - distance)) / 10; // может, не самая понятная формула
 			if (this.stoned) {
-				damage -= Math.log2(distance) * 5; // без округлений возможных дробных значений
+				damage -= Math.log2(distance) * 5;
 			}
-			return (damage > 0) ? damage : 0;
+			return (damage > 0) ? Math.round(damage) : 0;
 		}
 
 		return (this.attackRange >= distance) ? this.attackDamage : 0; // ну это уже отсебятина с Bowman
